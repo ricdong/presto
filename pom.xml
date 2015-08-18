@@ -94,6 +94,7 @@
         <module>presto-docs</module>
         <module>presto-verifier</module>
         <module>presto-testing-server-launcher</module>
+        <module>presto-sqlserver</module>
     </modules>
 
     <dependencyManagement>
@@ -148,12 +149,18 @@
                 <artifactId>presto-base-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!--
+                        <dependency>
+                            <groupId>com.facebook.presto</groupId>
+                            <artifactId>presto-mysql</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
 
-            <dependency>
-                <groupId>com.facebook.presto</groupId>
-                <artifactId>presto-mysql</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+                        <dependency>
+                            <groupId>com.facebook.presto</groupId>
+                            <artifactId>presto-sqlserver</artifactId>
+                            <version>${project.version}</version>
+                        </dependency> -->
 
             <dependency>
                 <groupId>com.facebook.presto</groupId>
@@ -706,8 +713,8 @@
                                             <goal>copy</goal>
                                             <goal>analyze-dep-mgt</goal>
                                             <goal>analyze-duplicate</goal>
-                                            <goal>analyze-only</goal>
-                                        </goals>
+                                            <!--<goal>analyze-only</goal>-->
+                                </goals>
                                     </pluginExecutionFilter>
                                     <action>
                                         <ignore />
@@ -726,7 +733,7 @@
                                         <ignore />
                                     </action>
                                 </pluginExecution>
-                                <pluginExecution>
+                                <!--<pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>com.mycila</groupId>
                                         <artifactId>license-maven-plugin</artifactId>
@@ -738,7 +745,7 @@
                                     <action>
                                         <ignore />
                                     </action>
-                                </pluginExecution>
+                                </pluginExecution> -->
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>com.ning.maven.plugins</groupId>
@@ -833,7 +840,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.15</version>
@@ -853,18 +860,18 @@
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
+                <dependencies> -->
                     <!-- The version of checkstyle the plugin depends on doesn't support Java 8,
                          so override it manually until a new version of the plugin is released.
                          This is copied verbatim from the dependency declaration in the checkstyle
                          plugin -->
-                    <dependency>
+                   <!-- <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
                         <version>6.6</version>
                     </dependency>
                 </dependencies>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>io.takari.maven.plugins</groupId>
