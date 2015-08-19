@@ -39,30 +39,39 @@ public class SqlServerClient extends BaseJdbcClient {
     public SqlServerClient(JdbcConnectorId connectorId,
                            BaseJdbcConfig config, SqlServerConfig sqlServerConfig) {
         super(connectorId, config, "\"", new Driver());
-        int i = 0;
-        sqlServerConfig.getConnectionTimeout();
-        System.err.println("successful to init Sqlserverclient ricdong. fff");
+
+        connectionProperties.setProperty("dbType", TYPE_SQLSERVER);
     }
 
+//    @Override
+//    public Set<String> getSchemaNames()
+//    {
+//        try (Connection connection = driver.connect(connectionUrl, connectionProperties);
+//
+//             ResultSet resultSet = connection.getMetaData().getCatalogs()) {
+//            ImmutableSet.Builder<String> schemaNames = ImmutableSet.builder();
+//            while (resultSet.next()) {
+//                String schemaName = resultSet.getString("TABLE_CAT").toLowerCase(ENGLISH);
+//                // skip internal schemas
+//                if (!schemaName.equals("information_schema") && !schemaName.equals("mysql")) {
+//                    schemaNames.add(schemaName);
+//                }
+//            }
+//            return schemaNames.build();
+//        }
+//        catch (SQLException e) {
+//            e.printStackTrace();
+//            throw Throwables.propagate(e);
+//        }
+//
+//    }
+//
     @Override
-    public Set<String> getSchemaNames()
+    protected ResultSet getTables(Connection connection, String schemaName, String tableName)
+            throws SQLException
     {
-        // for MySQL, we need to list catalogs instead of schemas
-        try (Connection connection = driver.connect(connectionUrl, connectionProperties);
-             ResultSet resultSet = connection.getMetaData().getCatalogs()) {
-            ImmutableSet.Builder<String> schemaNames = ImmutableSet.builder();
-            while (resultSet.next()) {
-                String schemaName = resultSet.getString("TABLE_CAT").toLowerCase(ENGLISH);
-                // skip internal schemas
-                if (!schemaName.equals("information_schema") && !schemaName.equals("mysql")) {
-                    schemaNames.add(schemaName);
-                }
-            }
-            return schemaNames.build();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            throw Throwables.propagate(e);
-        }
+        // for sqlserver ,we use the schema name instead of catalog.
+        System.out.println("this here, use the subclass");
+        return connection.getMetaData().getTables(schemaName, null, null, new String[]{"TABLE"});
     }
 }
