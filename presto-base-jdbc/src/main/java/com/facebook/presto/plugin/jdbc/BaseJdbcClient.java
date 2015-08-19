@@ -93,6 +93,10 @@ public class BaseJdbcClient
     protected final Properties connectionProperties;
     protected final String identifierQuote;
 
+    public static final String TYPE_SQLSERVER = "SQLSERVER";
+
+    private String dbType = null;
+
     public BaseJdbcClient(JdbcConnectorId connectorId, BaseJdbcConfig config, String identifierQuote, Driver driver)
     {
         this.connectorId = checkNotNull(connectorId, "connectorId is null").toString();
@@ -109,6 +113,7 @@ public class BaseJdbcClient
         if (config.getConnectionPassword() != null) {
             connectionProperties.setProperty("password", config.getConnectionPassword());
         }
+
     }
 
     @Override
@@ -135,14 +140,30 @@ public class BaseJdbcClient
     public List<SchemaTableName> getTableNames(@Nullable String schema)
     {
         try (Connection connection = driver.connect(connectionUrl, connectionProperties)) {
+            // for test
             DatabaseMetaData metadata = connection.getMetaData();
+            ResultSet rs = metadata.getTables(schema, null, null, null);
+            System.out.println("current schema " + schema);
+            while (rs.next()) {
+                System.out.println("table name" + rs.getString(3));
+            }
+            System.err.println("first version v0.1");
+            // end test
+
             if (metadata.storesUpperCaseIdentifiers() && (schema != null)) {
                 schema = schema.toUpperCase(ENGLISH);
             }
             try (ResultSet resultSet = getTables(connection, schema, null)) {
                 ImmutableList.Builder<SchemaTableName> list = ImmutableList.builder();
                 while (resultSet.next()) {
-                    list.add(getSchemaTableName(resultSet));
+                    SchemaTableName tableName = getSchemaTableName(resultSet);
+                    System.err.println("ric# " + tableName.getSchemaName() + ", " + tableName.getTableName());
+
+                    tableName = new SchemaTableName(
+                            schema.toLowerCase(ENGLISH),
+                            resultSet.getString("TABLE_NAME").toLowerCase(ENGLISH));
+
+                    list.add(tableName);
                 }
                 return list.build();
             }
@@ -384,6 +405,7 @@ public class BaseJdbcClient
     protected ResultSet getTables(Connection connection, String schemaName, String tableName)
             throws SQLException
     {
+        // return connection.getMetaData().getTables(connection.getCatalog(), null, null, new String[] {"TABLE"});
         return connection.getMetaData().getTables(connection.getCatalog(), schemaName, tableName, new String[] {"TABLE"});
     }
 
