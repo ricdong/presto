@@ -71,7 +71,8 @@ public class SqlServerClient extends BaseJdbcClient {
             throws SQLException
     {
         // for sqlserver ,we use the schema name instead of catalog.
-        System.out.println("this here, use the subclass");
+
+        // here we will filter the tablename while the SQL query.
         return connection.getMetaData().getTables(schemaName, null, null, new String[]{"TABLE"});
     }
 }
